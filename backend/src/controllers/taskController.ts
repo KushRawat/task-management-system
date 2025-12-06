@@ -33,9 +33,7 @@ export const listTasks = asyncHandler(async (req: Request, res: Response) => {
   const where = {
     userId: req.user.id,
     ...(status ? { status } : {}),
-    ...(search
-      ? { title: { contains: search, mode: "insensitive" as const } }
-      : {}),
+    ...(search ? { title: { contains: search } } : {}),
   };
 
   const [tasks, total] = await Promise.all([
