@@ -31,8 +31,8 @@ export const TaskFilters = ({
   };
 
   return (
-    <div className="card flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 shadow-card dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 flex-wrap gap-3">
+    <div className="card flex flex-col gap-3 rounded-2xl border border-neutral-200 p-3 shadow-card dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-1 flex-wrap gap-2">
         <Input
           placeholder="Search by title..."
           value={search}

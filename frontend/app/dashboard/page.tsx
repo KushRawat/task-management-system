@@ -148,12 +148,13 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        <TaskFilters
-          onFilterChange={(f) => setFilters((prev) => ({ ...prev, ...f, page: 1 }))}
-          onCreate={openForCreate}
-          initialStatus={filters.status}
-          initialSearch={filters.search}
-        />
+        <div className="flex flex-col gap-3">
+          <TaskFilters
+            onFilterChange={(f) => setFilters((prev) => ({ ...prev, ...f, page: 1 }))}
+            initialStatus={filters.status}
+            initialSearch={filters.search}
+          />
+        </div>
 
         {!isAuthenticated ? (
           <div className="flex justify-center py-10">

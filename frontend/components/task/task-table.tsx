@@ -34,15 +34,15 @@ export const TaskTable = ({
 }) => {
   return (
     <div className="overflow-auto rounded-2xl border border-neutral-200 dark:border-neutral-800">
-      <table className="min-w-full text-sm border-collapse">
+      <table className="min-w-full text-sm border-collapse table-fixed">
         <thead className="bg-neutral-50 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
-            <th className="px-6 py-3 text-left font-semibold">Title</th>
-            <th className="px-6 py-3 text-left font-semibold">Status</th>
-            <th className="px-6 py-3 text-left font-semibold">Priority</th>
-            <th className="px-6 py-3 text-left font-semibold">Start</th>
-            <th className="px-6 py-3 text-left font-semibold">Due</th>
-            <th className="px-6 py-3 text-left font-semibold">Actions</th>
+            <th className="px-6 py-3 text-left font-semibold w-[26%]">Title</th>
+            <th className="px-6 py-3 text-left font-semibold w-[14%]">Status</th>
+            <th className="px-6 py-3 text-left font-semibold w-[14%]">Priority</th>
+            <th className="px-6 py-3 text-left font-semibold w-[12%]">Start</th>
+            <th className="px-6 py-3 text-left font-semibold w-[12%]">Due</th>
+            <th className="px-6 py-3 text-left font-semibold w-[22%]">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
