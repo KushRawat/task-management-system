@@ -1,0 +1,15 @@
+.DS_Store
+node_modules
+/backend/node_modules
+/frontend/node_modules
+/.next
+/frontend/.next
+/.turbo
+dist
+coverage
+*.log
+*.sqlite
+*.db
+.env
+backend/.env
+frontend/.env.local
