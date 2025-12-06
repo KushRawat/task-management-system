@@ -1,0 +1,151 @@
+import { Request, Response } from "express";
+import { TaskStatus } from "@prisma/client";
+import { z } from "zod";
+import { prisma } from "../lib/prisma";
+import { HttpError } from "../utils/httpError";
+import { asyncHandler } from "../utils/asyncHandler";
+
+const createTaskSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  status: z.nativeEnum(TaskStatus).optional(),
+});
+
+const updateTaskSchema = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
+  status: z.nativeEnum(TaskStatus).optional(),
+});
+
+const querySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(50).default(10),
+  status: z.nativeEnum(TaskStatus).optional(),
+  search: z.string().optional(),
+});
+
+export const listTasks = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const { page, pageSize, status, search } = querySchema.parse(req.query);
+
+  const where = {
+    userId: req.user.id,
+    ...(status ? { status } : {}),
+    ...(search
+      ? { title: { contains: search, mode: "insensitive" as const } }
+      : {}),
+  };
+
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.task.count({ where }),
+  ]);
+
+  res.json({
+    data: tasks,
+    meta: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    },
+  });
+});
+
+export const createTask = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const input = createTaskSchema.parse(req.body);
+
+  const task = await prisma.task.create({
+    data: {
+      title: input.title,
+      description: input.description,
+      status: input.status ?? TaskStatus.PENDING,
+      userId: req.user.id,
+    },
+  });
+
+  res.status(201).json(task);
+});
+
+export const getTask = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const { id } = req.params;
+
+  const task = await prisma.task.findFirst({
+    where: { id, userId: req.user.id },
+  });
+
+  if (!task) {
+    throw new HttpError(404, "Task not found");
+  }
+
+  res.json(task);
+});
+
+export const updateTask = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const { id } = req.params;
+  const input = updateTaskSchema.parse(req.body);
+
+  const existing = await prisma.task.findFirst({
+    where: { id, userId: req.user.id },
+  });
+
+  if (!existing) {
+    throw new HttpError(404, "Task not found");
+  }
+
+  const task = await prisma.task.update({
+    where: { id },
+    data: { ...input },
+  });
+
+  res.json(task);
+});
+
+export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const { id } = req.params;
+
+  const existing = await prisma.task.findFirst({
+    where: { id, userId: req.user.id },
+  });
+
+  if (!existing) {
+    throw new HttpError(404, "Task not found");
+  }
+
+  await prisma.task.delete({ where: { id } });
+  res.status(204).send();
+});
+
+export const toggleTask = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new HttpError(401, "Unauthorized");
+  const { id } = req.params;
+
+  const existing = await prisma.task.findFirst({
+    where: { id, userId: req.user.id },
+  });
+
+  if (!existing) {
+    throw new HttpError(404, "Task not found");
+  }
+
+  const nextStatus =
+    existing.status === TaskStatus.COMPLETED
+      ? TaskStatus.PENDING
+      : TaskStatus.COMPLETED;
+
+  const task = await prisma.task.update({
+    where: { id },
+    data: { status: nextStatus },
+  });
+
+  res.json(task);
+});
