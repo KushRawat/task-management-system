@@ -1,9 +1,9 @@
 'use client';
 
 import { ChangeEvent, useState } from "react";
-import { Select } from "./ui/select";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Select } from "../ui/select";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { TaskStatus } from "@/lib/types";
 import { Plus } from "lucide-react";
 

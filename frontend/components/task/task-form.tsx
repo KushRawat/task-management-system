@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Task } from "@/lib/types";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Select } from "./ui/select";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Select } from "../ui/select";
 
 const schema = z.object({
   title: z.string().min(1),
