@@ -3,18 +3,14 @@
 import { ChangeEvent, useState } from "react";
 import { Select } from "../ui/select";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { TaskStatus } from "@/lib/types";
-import { Plus } from "lucide-react";
 
 export const TaskFilters = ({
   onFilterChange,
-  onCreate,
   initialStatus,
   initialSearch,
 }: {
   onFilterChange: (filters: { status?: TaskStatus; search?: string }) => void;
-  onCreate: () => void;
   initialStatus?: TaskStatus;
   initialSearch?: string;
 }) => {
@@ -35,7 +31,7 @@ export const TaskFilters = ({
   };
 
   return (
-    <div className="glass flex flex-col gap-4 rounded-2xl border border-white/5 p-4 shadow-card sm:flex-row sm:items-center sm:justify-between">
+    <div className="card flex flex-col gap-4 rounded-2xl border border-neutral-200 p-4 shadow-card dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 flex-wrap gap-3">
         <Input
           placeholder="Search by title..."
@@ -54,9 +50,6 @@ export const TaskFilters = ({
           <option value="COMPLETED">Completed</option>
         </Select>
       </div>
-      <Button icon={<Plus size={16} />} onClick={onCreate}>
-        New Task
-      </Button>
     </div>
   );
 };
