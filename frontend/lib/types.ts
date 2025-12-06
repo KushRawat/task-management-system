@@ -11,6 +11,9 @@ export type Task = {
   title: string;
   description?: string | null;
   status: TaskStatus;
+  priority: "LOW" | "MEDIUM" | "HIGH";
+  startDate?: string | null;
+  dueDate?: string | null;
   createdAt: string;
   updatedAt: string;
 };

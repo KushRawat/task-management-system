@@ -114,13 +114,25 @@ export const taskApi = {
       })}`
     );
   },
-  async create(payload: { title: string; description?: string }) {
+  async create(payload: {
+    title: string;
+    description?: string;
+    status?: TaskStatus;
+    priority?: "LOW" | "MEDIUM" | "HIGH";
+    startDate?: string | null;
+    dueDate?: string | null;
+  }) {
     return apiFetch<Task>("/tasks", {
       method: "POST",
       body: JSON.stringify(payload),
     });
   },
-  async update(id: string, payload: Partial<Task>) {
+  async update(
+    id: string,
+    payload: Partial<
+      Pick<Task, "title" | "description" | "status" | "priority" | "startDate" | "dueDate">
+    >
+  ) {
     return apiFetch<Task>(`/tasks/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),

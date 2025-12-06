@@ -4,15 +4,21 @@ import { Task } from "@/lib/types";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import clsx from "clsx";
+import { Calendar, CheckCircle2, Edit3, Trash2 } from "lucide-react";
 
 const statusMap: Record<
   Task["status"],
-  { label: string; variant: "green" | "amber" | "blue" }
+  { label: string; variant: "warning" | "primary" | "success" }
 > = {
-  PENDING: { label: "Pending", variant: "amber" },
-  IN_PROGRESS: { label: "In progress", variant: "blue" },
-  COMPLETED: { label: "Completed", variant: "green" },
+  PENDING: { label: "Pending", variant: "warning" },
+  IN_PROGRESS: { label: "In progress", variant: "primary" },
+  COMPLETED: { label: "Completed", variant: "success" },
+};
+
+const priorityMap: Record<Task["priority"], { label: string; variant: "danger" | "primary" | "neutral" }> = {
+  HIGH: { label: "High", variant: "danger" },
+  MEDIUM: { label: "Medium", variant: "primary" },
+  LOW: { label: "Low", variant: "neutral" },
 };
 
 export const TaskCard = ({
@@ -27,41 +33,46 @@ export const TaskCard = ({
   onDelete: () => void;
 }) => {
   const status = statusMap[task.status];
+  const priority = priorityMap[task.priority];
+  const start = task.startDate ? new Date(task.startDate) : null;
+  const due = task.dueDate ? new Date(task.dueDate) : null;
+
   return (
-    <Card className="flex flex-col gap-3 border border-white/5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm uppercase tracking-[0.18em] text-slate-400">Task</p>
-          <h3 className="text-lg font-semibold text-white">{task.title}</h3>
-        </div>
-        <Badge variant={status.variant}>{status.label}</Badge>
-      </div>
-      {task.description && (
-        <p className="text-sm text-slate-300">{task.description}</p>
-      )}
-      <div className="flex items-center gap-3 text-xs text-slate-400">
-        <span>
-          Created {new Date(task.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-        </span>
-        <span className="h-1 w-1 rounded-full bg-slate-500" />
-        <span>Updated {new Date(task.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="secondary"
-          onClick={onToggle}
-          className={clsx(
-            task.status === "COMPLETED" ? "bg-emerald-500/20" : "bg-white/10"
+    <Card padding="p-4" className="border border-neutral-200 dark:border-neutral-800">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.5fr,1fr,1fr,1fr,auto] md:items-center">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">{task.title}</p>
+          {task.description && (
+            <p className="text-sm text-neutral-600 dark:text-neutral-300 line-clamp-2">{task.description}</p>
           )}
-        >
-          {task.status === "COMPLETED" ? "Mark as pending" : "Complete it"}
-        </Button>
-        <Button variant="ghost" onClick={onEdit}>
-          Edit
-        </Button>
-        <Button variant="ghost" onClick={onDelete}>
-          Delete
-        </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant={status.variant}>{status.label}</Badge>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant={priority.variant}>{priority.label}</Badge>
+        </div>
+        <div className="flex flex-col gap-1 text-sm text-neutral-600 dark:text-neutral-300">
+          <div className="flex items-center gap-2">
+            <Calendar size={16} className="text-neutral-400 dark:text-neutral-500" />
+            {start ? `Start: ${start.toLocaleDateString()}` : "No start date"}
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar size={16} className="text-neutral-400 dark:text-neutral-500" />
+            {due ? `Due: ${due.toLocaleDateString()}` : "No due date"}
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" onClick={onEdit} icon={<Edit3 size={16} />}>
+            Edit
+          </Button>
+          <Button variant="ghost" onClick={onToggle} icon={<CheckCircle2 size={16} />}>
+            {task.status === "COMPLETED" ? "Mark pending" : "Mark done"}
+          </Button>
+          <Button variant="danger" onClick={onDelete} icon={<Trash2 size={16} />}>
+            Delete
+          </Button>
+        </div>
       </div>
     </Card>
   );

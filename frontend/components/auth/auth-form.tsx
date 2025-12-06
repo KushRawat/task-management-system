@@ -15,9 +15,15 @@ const loginSchema = z.object({
   password: z.string().min(8),
 });
 
-const registerSchema = loginSchema.extend({
-  name: z.string().min(2),
-});
+const registerSchema = loginSchema
+  .extend({
+    name: z.string().min(2),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type Mode = "login" | "register";
 
@@ -31,7 +37,7 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(schema),
-    defaultValues: { email: "", password: "", name: "" },
+    defaultValues: { email: "", password: "", name: "", confirmPassword: "" },
   });
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
@@ -59,31 +65,46 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {mode === "register" && (
         <div className="space-y-2">
-          <label className="text-sm text-slate-200">Name</label>
+          <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Name</label>
           <Input placeholder="Alex Builder" {...register("name")} />
           {errors.name && (
-            <p className="text-xs text-amber-300">{errors.name.message}</p>
+            <p className="text-xs text-danger">{errors.name.message}</p>
           )}
         </div>
       )}
       <div className="space-y-2">
-        <label className="text-sm text-slate-200">Email</label>
+        <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Email</label>
         <Input placeholder="you@example.com" type="email" {...register("email")} />
         {errors.email && (
-          <p className="text-xs text-amber-300">{errors.email.message}</p>
+          <p className="text-xs text-danger">{errors.email.message}</p>
         )}
       </div>
       <div className="space-y-2">
-        <label className="text-sm text-slate-200">Password</label>
+        <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Password</label>
         <Input
           type="password"
           placeholder="At least 8 characters"
           {...register("password")}
         />
         {errors.password && (
-          <p className="text-xs text-amber-300">{errors.password.message}</p>
+          <p className="text-xs text-danger">{errors.password.message}</p>
         )}
       </div>
+      {mode === "register" && (
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Confirm password</label>
+          <Input
+            type="password"
+            placeholder="Re-enter password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-xs text-danger">
+              {errors.confirmPassword.message as string}
+            </p>
+          )}
+        </div>
+      )}
       <Button className="w-full" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : mode === "login" ? "Log in" : "Create account"}
       </Button>

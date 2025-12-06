@@ -5,18 +5,25 @@ import { HttpError } from "../utils/httpError";
 import { asyncHandler } from "../utils/asyncHandler";
 
 const taskStatuses = ["PENDING", "IN_PROGRESS", "COMPLETED"] as const;
+const priorities = ["LOW", "MEDIUM", "HIGH"] as const;
 type TaskStatus = (typeof taskStatuses)[number];
 
 const createTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   status: z.enum(taskStatuses).optional(),
+  priority: z.enum(priorities).optional(),
+  startDate: z.string().optional(),
+  dueDate: z.string().optional(),
 });
 
 const updateTaskSchema = z.object({
   title: z.string().min(1).optional(),
   description: z.string().optional(),
   status: z.enum(taskStatuses).optional(),
+  priority: z.enum(priorities).optional(),
+  startDate: z.string().optional().nullable(),
+  dueDate: z.string().optional().nullable(),
 });
 
 const querySchema = z.object({
@@ -60,12 +67,17 @@ export const listTasks = asyncHandler(async (req: Request, res: Response) => {
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new HttpError(401, "Unauthorized");
   const input = createTaskSchema.parse(req.body);
+  const startDate = input.startDate ? new Date(input.startDate) : undefined;
+  const dueDate = input.dueDate ? new Date(input.dueDate) : undefined;
 
   const task = await prisma.task.create({
     data: {
       title: input.title,
       description: input.description,
       status: input.status ?? "PENDING",
+      priority: input.priority ?? "MEDIUM",
+      startDate,
+      dueDate,
       userId: req.user.id,
     },
   });
@@ -92,6 +104,8 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new HttpError(401, "Unauthorized");
   const { id } = req.params;
   const input = updateTaskSchema.parse(req.body);
+  const startDate = input.startDate ? new Date(input.startDate) : null;
+  const dueDate = input.dueDate ? new Date(input.dueDate) : null;
 
   const existing = await prisma.task.findFirst({
     where: { id, userId: req.user.id },
@@ -103,7 +117,11 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
 
   const task = await prisma.task.update({
     where: { id },
-    data: { ...input },
+    data: {
+      ...input,
+      startDate: input.startDate === undefined ? undefined : startDate,
+      dueDate: input.dueDate === undefined ? undefined : dueDate,
+    },
   });
 
   res.json(task);
