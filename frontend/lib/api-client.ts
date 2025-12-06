@@ -103,6 +103,7 @@ export const taskApi = {
     page?: number;
     pageSize?: number;
     status?: TaskStatus;
+    priority?: "LOW" | "MEDIUM" | "HIGH";
     search?: string;
   }) {
     return apiFetch<PaginatedTasks>(
@@ -110,6 +111,7 @@ export const taskApi = {
         page: params.page,
         pageSize: params.pageSize,
         status: params.status,
+        priority: params.priority,
         search: params.search,
       })}`
     );

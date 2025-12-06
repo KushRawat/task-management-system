@@ -7,6 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 const taskStatuses = ["PENDING", "IN_PROGRESS", "COMPLETED"] as const;
 const priorities = ["LOW", "MEDIUM", "HIGH"] as const;
 type TaskStatus = (typeof taskStatuses)[number];
+type TaskPriority = (typeof priorities)[number];
 
 const createTaskSchema = z.object({
   title: z.string().min(1),
@@ -30,16 +31,18 @@ const querySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(50).default(10),
   status: z.enum(taskStatuses).optional(),
+  priority: z.enum(priorities).optional(),
   search: z.string().optional(),
 });
 
 export const listTasks = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new HttpError(401, "Unauthorized");
-  const { page, pageSize, status, search } = querySchema.parse(req.query);
+  const { page, pageSize, status, priority, search } = querySchema.parse(req.query);
 
   const where = {
     userId: req.user.id,
     ...(status ? { status } : {}),
+    ...(priority ? { priority } : {}),
     ...(search ? { title: { contains: search } } : {}),
   };
 

@@ -22,6 +22,7 @@ export default function DashboardPage() {
     page: number;
     pageSize: number;
     status?: TaskStatus;
+    priority?: "LOW" | "MEDIUM" | "HIGH";
     search?: string;
   }>({ page: 1, pageSize: 6 });
   const [layout, setLayout] = useState<"cards" | "table">("cards");
@@ -152,6 +153,7 @@ export default function DashboardPage() {
           <TaskFilters
             onFilterChange={(f) => setFilters((prev) => ({ ...prev, ...f, page: 1 }))}
             initialStatus={filters.status}
+            initialPriority={filters.priority}
             initialSearch={filters.search}
           />
         </div>
