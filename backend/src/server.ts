@@ -13,7 +13,11 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (config.FRONTEND_ORIGINS.includes(origin)) return callback(null, true);
+      const isLocalhost =
+        origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
+      if (config.FRONTEND_ORIGINS.includes(origin) || isLocalhost) {
+        return callback(null, true);
+      }
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
