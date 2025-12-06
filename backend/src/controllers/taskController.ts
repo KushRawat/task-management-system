@@ -1,26 +1,28 @@
 import { Request, Response } from "express";
-import { TaskStatus } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { HttpError } from "../utils/httpError";
 import { asyncHandler } from "../utils/asyncHandler";
 
+const taskStatuses = ["PENDING", "IN_PROGRESS", "COMPLETED"] as const;
+type TaskStatus = (typeof taskStatuses)[number];
+
 const createTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  status: z.nativeEnum(TaskStatus).optional(),
+  status: z.enum(taskStatuses).optional(),
 });
 
 const updateTaskSchema = z.object({
   title: z.string().min(1).optional(),
   description: z.string().optional(),
-  status: z.nativeEnum(TaskStatus).optional(),
+  status: z.enum(taskStatuses).optional(),
 });
 
 const querySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(50).default(10),
-  status: z.nativeEnum(TaskStatus).optional(),
+  status: z.enum(taskStatuses).optional(),
   search: z.string().optional(),
 });
 
@@ -65,7 +67,7 @@ export const createTask = asyncHandler(async (req: Request, res: Response) => {
     data: {
       title: input.title,
       description: input.description,
-      status: input.status ?? TaskStatus.PENDING,
+      status: input.status ?? "PENDING",
       userId: req.user.id,
     },
   });
@@ -138,9 +140,7 @@ export const toggleTask = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const nextStatus =
-    existing.status === TaskStatus.COMPLETED
-      ? TaskStatus.PENDING
-      : TaskStatus.COMPLETED;
+    existing.status === "COMPLETED" ? "PENDING" : "COMPLETED";
 
   const task = await prisma.task.update({
     where: { id },
