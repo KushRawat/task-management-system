@@ -105,8 +105,8 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
           )}
         </div>
       )}
-      <Button className="w-full" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : mode === "login" ? "Log in" : "Create account"}
+      <Button className="w-full" type="submit" disabled={isSubmitting} loading={isSubmitting}>
+        {mode === "login" ? "Log in" : "Create account"}
       </Button>
     </form>
   );

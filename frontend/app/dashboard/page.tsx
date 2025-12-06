@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [activeActionId, setActiveActionId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user || !accessToken) {
@@ -63,18 +64,24 @@ export default function DashboardPage() {
 
   const handleDelete = async (id: string) => {
     try {
+      setActiveActionId(id);
       await deleteTask.mutateAsync(id);
       setTaskToDelete(null);
     } catch (error) {
       // toast handled in mutation
+    } finally {
+      setActiveActionId(null);
     }
   };
 
   const handleToggle = async (id: string) => {
     try {
+      setActiveActionId(id);
       await toggleTask.mutateAsync(id);
     } catch (error) {
       // toast handled in mutation
+    } finally {
+      setActiveActionId(null);
     }
   };
 
@@ -183,6 +190,8 @@ export default function DashboardPage() {
                     onToggle={() => handleToggle(task.id)}
                     onEdit={() => openForEdit(task)}
                     onDelete={() => setTaskToDelete(task)}
+                    toggleLoading={toggleTask.isPending && activeActionId === task.id}
+                    deleteLoading={deleteTask.isPending && activeActionId === task.id}
                   />
                 ))}
               </div>
@@ -192,6 +201,8 @@ export default function DashboardPage() {
                 onEdit={openForEdit}
                 onDelete={(task) => setTaskToDelete(task)}
                 onToggle={handleToggle}
+                toggleLoadingId={toggleTask.isPending ? activeActionId : null}
+                deleteLoadingId={deleteTask.isPending ? activeActionId : null}
               />
             )}
             {meta && (

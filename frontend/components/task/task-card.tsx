@@ -26,11 +26,15 @@ export const TaskCard = ({
   onToggle,
   onEdit,
   onDelete,
+  toggleLoading = false,
+  deleteLoading = false,
 }: {
   task: Task;
   onToggle: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  toggleLoading?: boolean;
+  deleteLoading?: boolean;
 }) => {
   const status = statusMap[task.status];
   const priority = priorityMap[task.priority];
@@ -66,10 +70,10 @@ export const TaskCard = ({
           <Button variant="secondary" onClick={onEdit} icon={<Edit3 size={16} />}>
             Edit
           </Button>
-          <Button variant="ghost" onClick={onToggle} icon={<CheckCircle2 size={16} />}>
+          <Button variant="ghost" onClick={onToggle} icon={<CheckCircle2 size={16} />} loading={toggleLoading}>
             {task.status === "COMPLETED" ? "Mark pending" : "Mark done"}
           </Button>
-          <Button variant="danger" onClick={onDelete} icon={<Trash2 size={16} />}>
+          <Button variant="danger" onClick={onDelete} icon={<Trash2 size={16} />} loading={deleteLoading}>
             Delete
           </Button>
         </div>

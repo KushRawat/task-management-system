@@ -2,8 +2,9 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 import clsx from "clsx";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "danger";
   icon?: ReactNode;
+  loading?: boolean;
 };
 
 export const Button = ({
@@ -11,25 +12,32 @@ export const Button = ({
   className,
   variant = "primary",
   icon,
+  loading = false,
   ...props
 }: ButtonProps) => {
   const base =
     "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   const styles: Record<NonNullable<ButtonProps["variant"]>, string> = {
     primary:
-      "bg-gradient-to-r from-brand-500 to-cyan-400 text-slate-900 shadow-lg shadow-cyan-500/20 hover:-translate-y-0.5 focus-visible:outline-brand-300",
+      "bg-primary-600 text-white shadow-md hover:bg-primary-700 active:scale-[0.99] focus-visible:outline-primary-300 dark:bg-primary-500 dark:hover:bg-primary-400",
     secondary:
-      "bg-white/10 text-white border border-white/10 hover:bg-white/15 focus-visible:outline-brand-300",
+      "bg-white text-primary-700 border border-neutral-200 hover:bg-neutral-50 focus-visible:outline-primary-300 dark:bg-neutral-800 dark:text-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-700",
     ghost:
-      "text-slate-200 hover:text-white hover:bg-white/5 focus-visible:outline-brand-300",
+      "text-neutral-700 hover:bg-neutral-100 focus-visible:outline-primary-300 dark:text-neutral-200 dark:hover:bg-neutral-800",
+    danger:
+      "bg-danger text-white shadow hover:bg-red-600 active:scale-[0.99] focus-visible:outline-red-200",
   };
 
   return (
     <button
       className={clsx(base, styles[variant], className)}
       type={props.type || "button"}
+      disabled={loading || props.disabled}
       {...props}
     >
+      {loading && (
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-white dark:border-neutral-300 dark:border-t-white" />
+      )}
       {icon}
       {children}
     </button>

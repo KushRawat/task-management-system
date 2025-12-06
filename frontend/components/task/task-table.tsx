@@ -22,23 +22,27 @@ export const TaskTable = ({
   onEdit,
   onDelete,
   onToggle,
+  toggleLoadingId,
+  deleteLoadingId,
 }: {
   tasks: Task[];
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
   onToggle: (id: string) => void;
+  toggleLoadingId?: string | null;
+  deleteLoadingId?: string | null;
 }) => {
   return (
     <div className="overflow-auto rounded-2xl border border-neutral-200 dark:border-neutral-800">
-      <table className="min-w-full text-sm">
+      <table className="min-w-full text-sm border-collapse">
         <thead className="bg-neutral-50 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
-            <th className="px-4 py-3 text-left font-semibold">Title</th>
-            <th className="px-4 py-3 text-left font-semibold">Status</th>
-            <th className="px-4 py-3 text-left font-semibold">Priority</th>
-            <th className="px-4 py-3 text-left font-semibold">Start</th>
-            <th className="px-4 py-3 text-left font-semibold">Due</th>
-            <th className="px-4 py-3 text-left font-semibold">Actions</th>
+            <th className="px-6 py-3 text-left font-semibold">Title</th>
+            <th className="px-6 py-3 text-left font-semibold">Status</th>
+            <th className="px-6 py-3 text-left font-semibold">Priority</th>
+            <th className="px-6 py-3 text-left font-semibold">Start</th>
+            <th className="px-6 py-3 text-left font-semibold">Due</th>
+            <th className="px-6 py-3 text-left font-semibold">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
@@ -49,29 +53,39 @@ export const TaskTable = ({
             const due = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "—";
             return (
               <tr key={task.id} className="bg-white text-neutral-800 dark:bg-neutral-900 dark:text-neutral-100">
-                <td className="px-4 py-3">
+                <td className="px-6 py-3 align-top">
                   <div className="font-semibold">{task.title}</div>
                   {task.description && (
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2">{task.description}</p>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-6 py-3 align-top">
                   <Badge variant={status.variant}>{status.label}</Badge>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-6 py-3 align-top">
                   <Badge variant={priority.variant}>{priority.label}</Badge>
                 </td>
-                <td className="px-4 py-3 text-neutral-600 dark:text-neutral-300">{start}</td>
-                <td className="px-4 py-3 text-neutral-600 dark:text-neutral-300">{due}</td>
-                <td className="px-4 py-3">
+                <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{start}</td>
+                <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{due}</td>
+                <td className="px-6 py-3 align-top">
                   <div className="flex flex-wrap gap-2">
                     <Button variant="secondary" onClick={() => onEdit(task)} icon={<Edit3 size={16} />}>
                       Edit
                     </Button>
-                    <Button variant="ghost" onClick={() => onToggle(task.id)} icon={<CheckCircle2 size={16} />}>
+                    <Button
+                      variant="ghost"
+                      onClick={() => onToggle(task.id)}
+                      icon={<CheckCircle2 size={16} />}
+                      loading={toggleLoadingId === task.id}
+                    >
                       {task.status === "COMPLETED" ? "Mark pending" : "Mark done"}
                     </Button>
-                    <Button variant="danger" onClick={() => onDelete(task)} icon={<Trash2 size={16} />}>
+                    <Button
+                      variant="danger"
+                      onClick={() => onDelete(task)}
+                      icon={<Trash2 size={16} />}
+                      loading={deleteLoadingId === task.id}
+                    >
                       Delete
                     </Button>
                   </div>
