@@ -10,6 +10,7 @@ coverage
 *.log
 *.sqlite
 *.db
+*.db-journal
 .env
 backend/.env
 frontend/.env.local
