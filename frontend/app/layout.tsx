@@ -14,7 +14,7 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TaskFlow | Task Management System",
+  title: "TaskSphere | Task Management",
   description: "Secure, beautiful task manager with JWT auth and live updates.",
 };
 

@@ -14,6 +14,7 @@ import { Loader } from "@/components/ui/loader";
 import { useAuthStore } from "@/lib/auth-store";
 import { useTasks } from "@/hooks/useTasks";
 import { Task, TaskStatus } from "@/lib/types";
+import toast from "react-hot-toast";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -126,7 +127,13 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button onClick={openForCreate}>Add task</Button>
-              <Button variant="secondary" onClick={() => tasksQuery.refetch()}>
+              <Button
+                variant="secondary"
+                onClick={async () => {
+                  await tasksQuery.refetch();
+                  toast.success("Tasks refreshed");
+                }}
+              >
                 Refresh
               </Button>
               <div className="rounded-full border border-neutral-200 bg-white p-1 text-xs text-neutral-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">

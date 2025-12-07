@@ -41,7 +41,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         toastOptions={{
           duration: 3200,
           className:
-            "rounded-lg border border-neutral-200 shadow-md bg-white text-neutral-900 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-50",
+            "rounded-lg border border-neutral-200 shadow-lg bg-white text-neutral-900 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-50",
         }}
       >
         {(t) => (
@@ -50,16 +50,10 @@ export const Providers = ({ children }: { children: ReactNode }) => {
             style={{ background: "transparent", boxShadow: "none" }}
           >
             {({ icon, message }) => (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-sm">
-                  {icon}
-                  {message}
-                </div>
+              <div className="flex flex-col gap-2 rounded-lg bg-white px-3 py-2 text-neutral-900 shadow-md ring-1 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-50 dark:ring-neutral-700">
+                <div className="flex items-center gap-2 text-sm">{icon}{message}</div>
                 <div className="h-1 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  <div
-                    className="h-full bg-primary-500 transition-all"
-                    style={{ width: "100%", animation: "toast-progress linear 3.2s forwards" }}
-                  />
+                  <div className="h-full bg-primary-500 transition-all" style={{ width: "100%", animation: "toast-progress linear 3.2s forwards" }}/>
                 </div>
               </div>
             )}

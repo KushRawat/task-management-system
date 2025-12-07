@@ -8,6 +8,13 @@ import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   const [styleVariant, setStyleVariant] = useState<"classic" | "hero">("classic");
+  const { user, accessToken } = useAuthStore();
+
+  if (user && accessToken) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/dashboard";
+    }
+  }
 
   return (
     <>

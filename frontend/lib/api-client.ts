@@ -58,6 +58,9 @@ export const apiFetch = async <T>(
       return apiFetch<T>(path, options, false);
     }
     logout();
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
     throw new Error("Please log in again");
   }
 

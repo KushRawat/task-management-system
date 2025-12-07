@@ -68,22 +68,24 @@ export const TaskTable = ({
                 <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{start}</td>
                 <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{due}</td>
                 <td className="px-6 py-3 align-top">
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="secondary" onClick={() => onEdit(task)} icon={<Edit3 size={16} />}>
+                  <div className="flex flex-nowrap items-center gap-2">
+                    <Button size="sm" variant="secondary" onClick={() => onEdit(task)} icon={<Edit3 size={14} />}>
                       Edit
                     </Button>
                     <Button
+                      size="sm"
                       variant="ghost"
                       onClick={() => onToggle(task.id)}
-                      icon={<CheckCircle2 size={16} />}
+                      icon={<CheckCircle2 size={14} />}
                       loading={toggleLoadingId === task.id}
                     >
                       {task.status === "COMPLETED" ? "Mark pending" : "Mark done"}
                     </Button>
                     <Button
+                      size="sm"
                       variant="danger"
                       onClick={() => onDelete(task)}
-                      icon={<Trash2 size={16} />}
+                      icon={<Trash2 size={14} />}
                       loading={deleteLoadingId === task.id}
                     >
                       Delete
