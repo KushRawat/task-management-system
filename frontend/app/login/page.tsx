@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AppHeader } from "@/components/app-header";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Card } from "@/components/ui/card";
+import { useAuthStore } from "@/lib/auth-store";
 
 export default function LoginPage() {
   const [styleVariant, setStyleVariant] = useState<"classic" | "hero">("classic");
