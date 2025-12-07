@@ -41,29 +41,21 @@ export const TaskFilters = ({
   };
 
   return (
-    <div className="card flex flex-col gap-3 rounded-2xl border border-neutral-200 p-3 shadow-card dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 flex-wrap items-center gap-2">
+    <div className="card rounded-2xl border border-neutral-200 p-3 shadow-card dark:border-neutral-800">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[1.3fr,0.7fr,0.7fr]">
         <Input
           placeholder="Search by title..."
           value={search}
           onChange={handleSearch}
-          className="min-w-[240px] flex-1"
+          className="w-full"
         />
-        <Select
-          value={status || "ALL"}
-          onChange={handleStatus}
-          className="w-[180px]"
-        >
+        <Select value={status || "ALL"} onChange={handleStatus} className="w-full">
           <option value="ALL">All statuses</option>
           <option value="PENDING">Pending</option>
           <option value="IN_PROGRESS">In progress</option>
           <option value="COMPLETED">Completed</option>
         </Select>
-        <Select
-          value={priority || "ALL"}
-          onChange={handlePriority}
-          className="w-[160px]"
-        >
+        <Select value={priority || "ALL"} onChange={handlePriority} className="w-full">
           <option value="ALL">All priorities</option>
           <option value="LOW">Low</option>
           <option value="MEDIUM">Medium</option>
