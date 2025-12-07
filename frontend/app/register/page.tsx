@@ -6,16 +6,19 @@ import { AppHeader } from "@/components/app-header";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Card } from "@/components/ui/card";
 import { useAuthStore } from "@/lib/auth-store";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [styleVariant, setStyleVariant] = useState<"classic" | "hero">("classic");
   const { user, accessToken } = useAuthStore();
+  const router = useRouter();
 
-  if (user && accessToken) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/dashboard";
+  useEffect(() => {
+    if (user && accessToken) {
+      router.replace("/dashboard");
     }
-  }
+  }, [user, accessToken, router]);
 
   return (
     <>

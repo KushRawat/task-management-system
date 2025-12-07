@@ -68,7 +68,7 @@ export const TaskTable = ({
                 <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{start}</td>
                 <td className="px-6 py-3 text-neutral-600 dark:text-neutral-300 align-top">{due}</td>
                 <td className="px-6 py-3 align-top">
-                  <div className="flex flex-nowrap items-center gap-2">
+                  <div className="flex flex-nowrap items-center gap-1.5">
                     <Button size="sm" variant="secondary" onClick={() => onEdit(task)} icon={<Edit3 size={14} />}>
                       Edit
                     </Button>
